@@ -2,8 +2,7 @@ from flask import Flask, request
 import requests
 import os
 app = Flask(__name__)
-
-#port = os.environ['PORT']
+port = os.getenv("PORT", "2323")
 
 @app.route("/")
 def general():
@@ -37,4 +36,4 @@ def health():
 FLASK MAIN
 '''
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5555, debug=True)
+    app.run(host='0.0.0.0', port=int(port), debug=True)
