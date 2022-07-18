@@ -3,7 +3,7 @@ import requests
 import os
 app = Flask(__name__)
 port = os.getenv("PORT", "2323")
-
+host = os.getenv("HOST", "0.0.0.0")
 @app.route("/")
 def general():
     return "OK"
@@ -18,22 +18,26 @@ def get_ip():
     return response["ip"]
 
 @app.route("/client")
+def print_location():
+    response = get_location()
+    location_data = "<h2>Ip</h2>" + response.get("ip") \
+                     + "<h2>City</h2>" + response.get("city") \
+                     + "<h2>Region</h2>" + response.get("region") \
+                     + "<h2>Country</h2>" + response.get("country_name")
+    return location_data
+
+@app.route("/geo")
 def get_location():
     ip_address = get_ip()
-    response = requests.get(f'https://ipapi.co/{ip_address}/json/').json()
-    location_data = "<h2>ip</h2>" + ip_address \
-                     + "<h2>city</h2>" + response.get("city") \
-                     + "<h2>region</h2>" + response.get("region") \
-                     + "<h2>country</h2>" + response.get("country_name")
-    return location_data
+    return requests.get(f'https://ipapi.co/{ip_address}/json/').json()
+
 
 @app.route("/health")
 def health():
     return "service is healthy"
 
-
 '''
 FLASK MAIN
 '''
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=int(port), debug=True)
+    app.run(host=host, port=int(port), debug=True)
