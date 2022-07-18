@@ -3,7 +3,7 @@ import requests
 import os
 app = Flask(__name__)
 
-port = os.environ['PORT']
+#port = os.environ['PORT']
 
 @app.route("/")
 def general():
@@ -14,10 +14,19 @@ def hello():
     return "<h1>Hello World</h1>"
 
 @app.route("/host_ip")
-def index():
-    server_name = request.environ['SERVER_NAME']
-    server_ip = requests.get('http://ifconfig.io')
-    return "Host: " + str(server_name) + "\n" + "Server info: " + str(server_ip.text)
+def get_ip():
+    response = requests.get('https://api64.ipify.org?format=json').json()
+    return response["ip"]
+
+@app.route("/client")
+def get_location():
+    ip_address = get_ip()
+    response = requests.get(f'https://ipapi.co/{ip_address}/json/').json()
+    location_data = "<h2>ip</h2>" + ip_address \
+                     + "<h2>city</h2>" + response.get("city") \
+                     + "<h2>region</h2>" + response.get("region") \
+                     + "<h2>country</h2>" + response.get("country_name")
+    return location_data
 
 @app.route("/health")
 def health():
@@ -28,4 +37,4 @@ def health():
 FLASK MAIN
 '''
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=int(port), debug=True)
+    app.run(host='0.0.0.0', port=5555, debug=True)
