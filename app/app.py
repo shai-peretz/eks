@@ -17,6 +17,11 @@ def get_ip():
     response = requests.get('https://api64.ipify.org?format=json').json()
     return response["ip"]
 
+@app.route("/geo")
+def get_location():
+    ip_address = get_ip()
+    return requests.get(f'https://ipapi.co/{ip_address}/json/').json()
+
 @app.route("/client")
 def print_location():
     response = get_location()
@@ -26,15 +31,10 @@ def print_location():
                      + "<h2>Country</h2>" + response.get("country_name")
     return location_data
 
-@app.route("/geo")
-def get_location():
-    ip_address = get_ip()
-    return requests.get(f'https://ipapi.co/{ip_address}/json/').json()
-
-
 @app.route("/health")
 def health():
     return "service is healthy"
+
 
 '''
 FLASK MAIN
