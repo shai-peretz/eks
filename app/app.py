@@ -4,6 +4,7 @@ import os
 app = Flask(__name__)
 port = os.getenv("PORT", "2323")
 host = os.getenv("HOST", "0.0.0.0")
+environment = os.getenv("ENVIRONMENT", "DEV")
 @app.route("/")
 def general():
     return "OK"
@@ -40,4 +41,7 @@ def health():
 FLASK MAIN
 '''
 if __name__ == '__main__':
-    app.run(host=host, port=int(port), debug=True)
+    if environment == "DEV":
+        app.run(host=host, port=int(port), debug=True)
+    else:
+        app.run(host=host, port=int(port), debug=False)
